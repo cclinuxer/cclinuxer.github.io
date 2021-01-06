@@ -1,7 +1,7 @@
 ---
 layout:     post
-title:      linux内存压缩浅析-使能zram-（原创，转发请注明出处）
-subtitle:   linux内存压缩浅析-使能zram（原创）
+title:      linux内存压缩浅析-使能zram
+subtitle:   linux内存压缩浅析-使能zram
 date:       2020-09-04
 author:     Albert
 header-img: img/post-bg-re-vs-ng2.jpg
