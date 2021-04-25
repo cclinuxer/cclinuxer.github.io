@@ -1,0 +1,20 @@
+
+
+
+
+类似于从zone中的分配，如果无法从指定的迁移类型分配到页，则会按照fallbacks指定的次序从备用迁移类型中尝试分配，它定义在page_alloc.c中。
+
+虽然该特性总是编译进去的，但是该特性只有在系统中有足够的内存可以分配到每种迁移类型对应的链表时才有意义，也就是说每个可以迁移性链表都要有“适量”的内存，内核需要对“适量”的判断是基于两个宏的：
+
+- pageblock_order：内核认为够大的一个分配的阶。
+- pageblock_nr_pages：内核认为启用该特性时每个迁移链表需要具有的最少的内存页数。它的定义是基于pageblock_order的。
+
+基于这个“适量”的概念内核会在build_all_zonelists中判断是否要启用该特性。page_group_by_mobility_disabled表示是否启用了该特性。
+
+内核定义了两个标志：__GFP_MOVABLE和 __GFP_RECLAIMABLE分别用来表示可移动迁移类型和可回收迁移类型，如果没有设置这两个标志，则表示是不可移动的。如果页面迁移特性被禁止了，则所有的页都是不可移动页。
+
+struct zone中包含了一个字段pageblock_flags，它用于跟踪包含pageblock_nr_pages个页的内存区的属性。在初始化期间，内核自动保证对每个迁移类型，在pageblock_flags中都分配了足够存储NR_PAGEBLOCK_BITS个比特的空间。
+
+set_pageblock_migratetype用于设置一个以指定的页为起始地址的内存区的迁移类型。
+
+页的迁移类型是预先分配好的，对应的比特位总是可用，在页释放时，必须将其返还给正确的链表。get_pageblock_migratetype可用于从struct page中获取页的迁移类型。
