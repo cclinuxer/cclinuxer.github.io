@@ -255,7 +255,7 @@ echo '-:my_probe' >> /sys/kernel/debug/tracing/kprobe_events
 
 ​	请参考这个[官方文档](https://github.com/torvalds/linux/blob/master/Documentation/trace/events.rst)的第五章，里面讲解了为事件设置`filter`的方法。我简单举个例子，假设我只打印`ping`数据包大于`300`的数据包，于是我可以这样写：
 
-​	`sudo ./kprobe  'p:icmp_rcv skb_addr=%di len=+112(%di):u32' 'len > 300'`
+​	`sudo ./kprobe  'p:icmp_rcv skb_addr=%di len=+112(%di):u32' 'len > 300'`， 后面这个`len > 300`就是`filter` ,表示我只`hook`数据包长度大于`300`的`icmp`数据包
 
 ​	我先测试让`ping`数据包等于`200` 看下有输出没有：
 
@@ -273,7 +273,7 @@ echo '-:my_probe' >> /sys/kernel/debug/tracing/kprobe_events
 
 ## 五、打印调用栈
 
-​	最后介绍一下调用栈，kprobe同样可以打印调用栈，以及指定`pid`等。`./kprobe --help`可以知道，加上-s就是打印出调用栈。`sudo ./kprobe  -s 'p:icmp_rcv skb_addr=%di len=+112(%di):u32' 'len > 300'`， 输出如下：然后我们就可以清晰看到`icmp`数据包大于300的数据包的函数调用栈。	![image-20210427114508273](https://gitee.com/cclinuxer/blog_image/raw/master/image/image-20210427114508273.png)
+​	最后介绍一下调用栈，kprobe同样可以打印调用栈，以及指定`pid`等。`./kprobe --help`可以知道，加上`-s`就是**打印出调用栈**。`sudo ./kprobe  -s 'p:icmp_rcv skb_addr=%di len=+112(%di):u32' 'len > 300'`， 输出如下：然后我们就可以清晰看到`icmp`数据包大于300的数据包的函数调用栈。	![image-20210427114508273](https://gitee.com/cclinuxer/blog_image/raw/master/image/image-20210427114508273.png)
 
 ​	是不是很方便，很强大。好好使用这个工具吧，据我目前工作来看，绝大部分`linux`设备都支持`kprobe`, 甚至是嵌入式设备也可以很方便的加上，而且在不使用这个工具下，几乎没有性能损耗。赶快用上吧。
 
@@ -296,7 +296,7 @@ echo '-:my_probe' >> /sys/kernel/debug/tracing/kprobe_events
 写出的`kprobe`命令如下：它的含义就是打印出来源`IP`是`192.168.68.1`的丢包，以及它的调用栈。
 
 ```
-sudo ./kprobe  'p:my_dropwatch  kfree_skb skb_addr=%di mark=+164(%di):u32' 'mark==88'
+sudo ./kprobe -s 'p:my_dropwatch  kfree_skb skb_addr=%di mark=+164(%di):u32' 'mark==88'
 ```
 
 ![image-20210427171500031](https://gitee.com/cclinuxer/blog_image/raw/master/image/image-20210427171500031.png)
