@@ -157,6 +157,9 @@ friends: [
     },{
         title: "brendangregg",
         href: "http://www.brendangregg.com/blog/2014-09-11/perf-kernel-line-tracing.html"
+    },{
+        title: "内核实验",
+        href: "https://biscuitos.github.io/blog/BiscuitOS_Catalogue/"
     }
 ]
 
