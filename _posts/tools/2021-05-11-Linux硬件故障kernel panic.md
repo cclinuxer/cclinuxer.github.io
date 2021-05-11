@@ -1,8 +1,8 @@
 ---
 layout:     post
-title:      一次硬件故障导致的kernelpanic排查
-subtitle:   一次硬件故障导致的kernelpanic排查
-date:       2021-05-11
+title:      一次硬件故障导致的kernel-panic排查
+subtitle:   一次硬件故障导致的kernel-panic排查
+date:       2021-04-26
 author:     Albert
 header-img: img/post-bg-re-vs-ng2.jpg
 catalog: true
@@ -141,207 +141,10 @@ struct page *__rmqueue_smallest(struct zone *zone, unsigned int order,
 
 `ffff88407ff98e80`就是`struct zone`的内容。我们使用如下命令`zone.free_area`  `ffff88407ff98e80`查看下`free_area`的内容：
 
-```
-  free_area = {{
-      free_list = {{
-          next = 0xffff88407ff98f08,
-          prev = 0xffff88407ff98f08
-        }, {
-          next = 0xffffea00d182e3e0,
-          prev = 0xffffea00d182e3e0
-        }, {
-          next = 0xffff88407ff98f28,
-          prev = 0xffff88407ff98f28
-        }, {
-          next = 0xffff88407ff98f38,
-          prev = 0xffff88407ff98f38
-        }, {
-          next = 0xffff88407ff98f48,
-          prev = 0xffff88407ff98f48
-        }},
-      nr_free = 1
-    }, {
-      free_list = {{
-          next = 0xffff88407ff98f60,
-          prev = 0xffff88407ff98f60
-        }, {
-          next = 0xffffea00d182e418,
-          prev = 0xffffea00d182e418
-        }, {
-          next = 0xffff88407ff98f80,
-          prev = 0xffff88407ff98f80
-        }, {
-          next = 0xffff88407ff98f90,
-          prev = 0xffff88407ff98f90
-        }, {
-          next = 0xffff88407ff98fa0,
-          prev = 0xffff88407ff98fa0
-        }},
-      nr_free = 1
-    }, {
-      free_list = {{
-          next = 0xffff88407ff98fb8,
-          prev = 0xffff88407ff98fb8
-        }, {
-          next = 0xffffea00d182e488,
-          prev = 0xffffea00d182e488
-        }, {
-          next = 0xffff88407ff98fd8,
-          prev = 0xffff88407ff98fd8
-        }, {
-          next = 0xffff88407ff98fe8,
-          prev = 0xffff88407ff98fe8
-        }, {
-          next = 0xffff88407ff98ff8,
-          prev = 0xffff88407ff98ff8
-        }},
-      nr_free = 1
-    }, {
-      free_list = {{
-          next = 0xffff88407ff99010,
-          prev = 0xffff88407ff99010
-        }, {
-          next = 0xffffea00d182e568,
-          prev = 0xffffea00d182e568
-        }, {
-          next = 0xffffea00d174f368,
-          prev = 0xffffea00d174f368
-        }, {
-          next = 0xffff88407ff99040,
-          prev = 0xffff88407ff99040
-        }, {
-          next = 0xffff88407ff99050,
-          prev = 0xffff88407ff99050
-        }},
-      nr_free = 2
-    }, {
-      free_list = {{
-          next = 0xffff88407ff99068,
-          prev = 0xffff88407ff99068
-        }, {
-          next = 0xffff88407ff99078,
-          prev = 0xffff88407ff99078
-        }, {
-          next = 0xffff88407ff99088,
-          prev = 0xffff88407ff99088
-        }, {
-          next = 0xffff88407ff99098,
-          prev = 0xffff88407ff99098
-        }, {
-          next = 0xffff88407ff990a8,
-          prev = 0xffff88407ff990a8
-        }},
-      nr_free = 0
-    }, {
-      free_list = {{
-          next = 0xffff88407ff990c0,
-          prev = 0xffff88407ff990c0
-        }, {
-          next = 0xffffea00d182e728,
-          prev = 0xffffea00d182e728
-        }, {
-          next = 0xffffea00d174f528,
-          prev = 0xffffea00d174f528
-        }, {
-          next = 0xffff88407ff990f0,
-          prev = 0xffff88407ff990f0
-        }, {
-          next = 0xffff88407ff99100,
-          prev = 0xffff88407ff99100
-        }},
-      nr_free = 2
-    }, {
-      free_list = {{
-          next = 0xffff88407ff99118,
-          prev = 0xffff88407ff99118
-        }, {
-          next = 0xffffea00d182ee28,
-          prev = 0xffffea00d182ee28
-        }, {
-          next = 0xffff88407ff99138,
-          prev = 0xffff88407ff99138
-        }, {
-          next = 0xffff88407ff99148,
-          prev = 0xffff88407ff99148
-        }, {
-          next = 0xffff88407ff99158,
-          prev = 0xffff88407ff99158
-        }},
-      nr_free = 1
-    }, {
-      free_list = {{
-          next = 0xffff88407ff99170,
-          prev = 0xffff88407ff99170
-        }, {
-          next = 0xffffea00d182fc28,
-          prev = 0xffffea00d182fc28
-        }, {
-          next = 0xffffea00d174fc28,
-          prev = 0xffffea00d174fc28
-        }, {
-          next = 0xffff88407ff991a0,
-          prev = 0xffff88407ff991a0
-        }, {
-          next = 0xffff88407ff991b0,
-          prev = 0xffff88407ff991b0
-        }},
-      nr_free = 2
-    }, {
-      free_list = {{
-          next = 0xffff88407ff991c8,
-          prev = 0xffff88407ff991c8
-        }, {
-          next = 0xffffea00d1831828,
-          prev = 0xffffea00d1831828
-        }, {
-          next = 0xffffea00d1751828,
-          prev = 0xffffea00d1751828
-        }, {
-          next = 0xffff88407ff991f8,
-          prev = 0xffff80407ff991f8
-        }, {
-          next = 0xffff88407ff99208,
-          prev = 0xffff88407ff99208
-        }},
-      nr_free = 2
-    }, {
-      free_list = {{
-          next = 0xffffe200d1eef028,
-          prev = 0xffffea00d1eef028
-        }, {
-          next = 0xffffea00d1835028,
-          prev = 0xffffea00d1835028
-        }, {
-          next = 0xffffea00d1755028,
-          prev = 0xffffea00d1755028
-        }, {
-          next = 0xffff88407ff99250,
-          prev = 0xffff88407ff99250
-        }, {
-          next = 0xffff88407ff99260,
-          prev = 0xffff88407ff99260
-        }},
-      nr_free = 3
-    }, {
-      free_list = {{
-          next = 0xffff88407ff99278,
-          prev = 0xffff88407ff99278
-        }, {
-          next = 0xffff88407ff99288,
-          prev = 0xffff88407ff99288
-        }, {
-          next = 0xffffea00d1740028,
-          prev = 0xffffea0071c0e028
-        }, {
-          next = 0xffffea0071c00028,
-          prev = 0xffffea0071c00028
-        }, {
-          next = 0xffff88407ff992b8,
-          prev = 0xffff88407ff992b8
-        }},
-      nr_free = 28001
-    }},
-```
+> ```
+> 
+> ```
+>
 
 如下的内容比较奇怪：
 
@@ -357,32 +160,13 @@ struct page *__rmqueue_smallest(struct zone *zone, unsigned int order,
 
   那么可以推测出：
 
-```
-      free_list = {{
-          next = 0xffffe200d1eef028,
-          prev = 0xffffea00d1eef028
-        }, {
-          next = 0xffffea00d1835028,
-          prev = 0xffffea00d1835028
-        }, {
-          next = 0xffffea00d1755028,
-          prev = 0xffffea00d1755028
-        }, {
-          next = 0xffff88407ff99250,
-          prev = 0xffff88407ff99250
-        }, {
-          next = 0xffff88407ff99260,
-          prev = 0xffff88407ff99260
-        }},
-      nr_free = 3
-```
+![image-20210511170054671](https://gitee.com/cclinuxer/blog_image/raw/master/image/image-20210511170054671.png)
 
 前三项都只有一个元素，后两项为空。于是我们看下第一项的内容
 
-```
-      free_list = {{
-          next = 0xffffe200d1eef028
-          prev = 0xffffea00d1eef028
+```c
+        next = 0xffffe200d1eef028
+        prev = 0xffffea00d1eef028
 ```
 
 `0xffffe200d1eef028`这个地址理论上应该是`0xffffea00d1eef028`， 而两个地址只有"`ea`"和“`e2`”这里不同， `a=0x1010 , 2=0x0010`, 一般来说踩内存问题不会只更改一个`bit`位，而且这个位在中间，很大可能是内存硬件`bit`位翻转导致。于是讲问题交给硬件去排查，果然发现了一些异常信息。这个锅甩给硬件了。
