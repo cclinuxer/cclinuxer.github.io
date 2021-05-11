@@ -1,7 +1,7 @@
 ---
 layout:     post
-title:      一次硬件故障导致的kernel-panic排查
-subtitle:   一次硬件故障导致的kernel-panic排查
+title:      一次硬件故障导致的kernelpanic排查
+subtitle:   一次硬件故障导致的kernelpanic排查
 date:       2021-05-11
 author:     Albert
 header-img: img/post-bg-re-vs-ng2.jpg
@@ -10,7 +10,6 @@ tags:
    - linux
    - tools 
    - debug
-   - crash
 ---
 
 # 一次硬件故障导致的kernel-panic排查
